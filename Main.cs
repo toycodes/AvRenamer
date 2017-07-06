@@ -19,68 +19,6 @@ namespace avmanager
             InitializeComponent();
         }
 
-        private void StartScan_Click(object sender, EventArgs e)
-        {
-            StartScan.Enabled = false;
-            List<ExtractorResult> results = CodeExtractor.extractFolder(DownloadFolderPath.Text);
-            FileView.Rows.Clear();
-            foreach(ExtractorResult result in results)
-            {
-                DataGridViewRow row = new DataGridViewRow();
-                if (result.possibleCode.Length == 1)
-                {
-                    DataGridViewTextBoxCell filePath = new DataGridViewTextBoxCell();
-                    filePath.Value = result.filePath;
-                    row.Cells.Add(filePath);
-
-                    DataGridViewTextBoxCell possibleCode = new DataGridViewTextBoxCell();
-                    possibleCode.Value = result.recommandCode;
-                    row.Cells.Add(possibleCode);
-
-                    DataGridViewCheckBoxCell isRename = new DataGridViewCheckBoxCell();
-                    isRename.Value = false;
-                    row.Cells.Add(isRename);
-                }
-                if(result.possibleCode.Length == 0)
-                {
-                    DataGridViewTextBoxCell filePath = new DataGridViewTextBoxCell();
-                    filePath.Value = result.filePath;
-                    row.Cells.Add(filePath);
-
-                    DataGridViewTextBoxCell possibleCode = new DataGridViewTextBoxCell();
-                    possibleCode.Value = "";
-                    row.Cells.Add(possibleCode);
-
-                    DataGridViewCheckBoxCell isRename = new DataGridViewCheckBoxCell();
-                    isRename.Value = false;
-                    row.Cells.Add(isRename);
-                }
-                if (result.possibleCode.Length > 1)
-                {
-                    
-                    DataGridViewTextBoxCell filePath = new DataGridViewTextBoxCell();
-                    filePath.Value = result.filePath;
-                    row.Cells.Add(filePath);
-                    
-                    DataGridViewComboBoxCell possibleCode = new DataGridViewComboBoxCell();
-                    possibleCode.Items.AddRange(result.possibleCode);
-                    possibleCode.Value = result.recommandCode;
-                    row.Cells.Add(possibleCode);
-
-                    DataGridViewCheckBoxCell isRename = new DataGridViewCheckBoxCell();
-
-                    if ((string)possibleCode.Value != "")
-                        isRename.Value = false;
-                    else
-                        isRename.Value = false;
-                    row.Cells.Add(isRename);
-                }
-                FileView.Rows.Add(row);
-            }
-            StartScan.Enabled = true;
-            StartMove.Enabled = true;
-        }
-
         private void SelectDownloadFolderButton_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -95,55 +33,6 @@ namespace avmanager
             WorkingFolderPath.Text = fbd.SelectedPath;
         }
 
-        private void StartRename_Click(object sender, EventArgs e)
-        {
-            StartMove.Enabled = false;
-            int row = FileView.Rows.Count;
-            for(int i=0;i< row; i++)
-            {
-                if (FileView.Rows[i].Cells.Count < 2 || !(FileView.Rows[i].Cells[2] is DataGridViewCheckBoxCell)) continue;
-                DataGridViewCheckBoxCell selectedStatus = (DataGridViewCheckBoxCell)FileView.Rows[i].Cells[2];
-                if((bool)selectedStatus.Value)
-                {
-                    string orgiPath = (string)FileView.Rows[i].Cells[0].Value;
-                    string identifyCode = (string)FileView.Rows[i].Cells[1].Value;
-                    string destPath = WorkingFolderPath.Text + "\\" + identifyCode + Path.GetExtension(orgiPath);
-                    File.Move(orgiPath, destPath);
-                }
-            }
-            StartMove.Enabled = true;
-            StartScan_Click(null, null);
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            JavLibraryScraper scraper = new JavLibraryScraper();
-            DirectoryInfo folder = new DirectoryInfo(WorkingFolderPath.Text);
-            RenameMovies.Enabled = false;
-            foreach (FileInfo file in folder.GetFiles())
-            {
-                try
-                {
-                    if (file.Name.Contains("[")) continue;
-                    string[] name = file.Name.Split('.');
-                    MoiveInfo info = scraper.getMoiveInfoByIdentifyCode(name[0]);
-                    string actor_list = string.Join(",", info.Actors);
-                    actor_list = "[" + actor_list + "]";
-                    string genres = string.Join(",", info.Tags);
-                    genres = "[" + genres + "]";
-                    string leftName = "";
-                    for (int i = 1;i < name.Length;i++) leftName += "."+name[i];
-                    string destFile = Path.GetDirectoryName(file.FullName) + "\\" + info.Name + actor_list + genres + leftName;
-                    File.Move(file.FullName, destFile);
-                }
-                catch
-                {
-                    continue;
-                }   
-            }
-            RenameMovies.Enabled = true;
-        }
-
         private static string getAllowedFileName(string name)
         {
             char[] errorChars = Path.GetInvalidFileNameChars();
@@ -151,10 +40,10 @@ namespace avmanager
             {
                 name = name.Replace(chr, ' ');
             }
-            string[] names = name.Split('.'); 
+            string[] names = name.Split('.');
             while (System.Text.Encoding.Default.GetBytes(names[0]).Length > 170)
             {
-                if(names[0].LastIndexOf('[') != -1)
+                if (names[0].LastIndexOf('[') != -1)
                 {
                     names[0] = names[0].Substring(0, names[0].LastIndexOf('['));
                 }
@@ -167,15 +56,15 @@ namespace avmanager
                     break;
                 }
             }
-            return string.Join(".",names);
+            return string.Join(".", names);
         }
 
-        private void SmartMove_Click(object sender, EventArgs e)
+        private void doWork(object sender, DoWorkEventArgs e)
         {
-            SmartMove.Enabled = false;
+            BackgroundWorker bw = sender as BackgroundWorker;
             JavLibraryScraper scraper = new JavLibraryScraper();
             List<ExtractorResult> results = CodeExtractor.extractFolder(DownloadFolderPath.Text);
-            foreach(ExtractorResult er in results)
+            foreach (ExtractorResult er in results)
             {
                 try
                 {
@@ -188,16 +77,45 @@ namespace avmanager
                     genres = "[" + genres + "]";
                     string leftName = "";
                     for (int i = 1; i < name.Length; i++) leftName += "." + name[i];
-                    string destFile = WorkingFolderPath.Text + "\\" + getAllowedFileName(info.Name + actor_list + genres + leftName)+Path.GetExtension(er.filePath);
-                    Text = info.Name;
-                    File.Move(er.filePath, destFile);
+                    string destFile = WorkingFolderPath.Text + "\\" + getAllowedFileName(info.Name + actor_list + genres + leftName) + Path.GetExtension(er.filePath);
+                    er.destName = destFile;
+                    File.Move(er.filePath, er.destName);
+                    bw.ReportProgress(0, er);
                 }
                 catch
                 {
                     continue;
                 }
             }
-            SmartMove.Enabled = true;
+            bw.ReportProgress(100);
+        }
+
+        private void updateFileView(object sender, ProgressChangedEventArgs e)
+        {
+            if (e.UserState != null)
+            {
+                ExtractorResult er = e.UserState as ExtractorResult;
+                DataGridViewRow row = new DataGridViewRow();
+                DataGridViewTextBoxCell oriFilename = new DataGridViewTextBoxCell();
+                oriFilename.Value = Path.GetFileName(er.filePath);
+                row.Cells.Add(oriFilename);
+                DataGridViewTextBoxCell changedFilename = new DataGridViewTextBoxCell();
+                changedFilename.Value = Path.GetFileName(er.destName);
+                row.Cells.Add(changedFilename);
+                FileView.Rows.Add(row);
+            }
+
+            if (e.ProgressPercentage == 100) SmartMove.Enabled = true;
+        }
+
+        private void SmartMove_Click(object sender, EventArgs e)
+        {
+            SmartMove.Enabled = false;
+            BackgroundWorker m_BackgroundWorker = new BackgroundWorker();
+            m_BackgroundWorker.WorkerReportsProgress = true;
+            m_BackgroundWorker.DoWork += new DoWorkEventHandler(doWork);
+            m_BackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(updateFileView);
+            m_BackgroundWorker.RunWorkerAsync();
         }
 
         private byte[] downloadImgData(string url)
@@ -213,7 +131,7 @@ namespace avmanager
 
         private void GetImages_Click(object sender, EventArgs e)
         {
-            GetImages.Enabled = false;
+            GetImageData.Enabled = false;
             JavLibraryScraper scraper = new JavLibraryScraper();
             List<ExtractorResult> results = CodeExtractor.extractFolder(WorkingFolderPath.Text);
             foreach (ExtractorResult er in results)
@@ -241,7 +159,7 @@ namespace avmanager
                     continue;
                 }
             }
-            GetImages.Enabled = true;
+            GetImageData.Enabled = true;
         }
     }
 }

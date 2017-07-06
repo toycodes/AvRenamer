@@ -28,33 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.StartScan = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.DownloadFolderPath = new System.Windows.Forms.TextBox();
             this.FileView = new System.Windows.Forms.DataGridView();
-            this.FilePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdentifyCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Action = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.StartMove = new System.Windows.Forms.Button();
             this.SelectDownloadFolderButton = new System.Windows.Forms.Button();
             this.SelectWorkingFolderButton = new System.Windows.Forms.Button();
             this.WorkingFolderPath = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.RenameMovies = new System.Windows.Forms.Button();
             this.SmartMove = new System.Windows.Forms.Button();
-            this.GetImages = new System.Windows.Forms.Button();
+            this.GetImageData = new System.Windows.Forms.Button();
+            this.OriginalFilename = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ChangedFilename = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.FileView)).BeginInit();
             this.SuspendLayout();
-            // 
-            // StartScan
-            // 
-            this.StartScan.Location = new System.Drawing.Point(353, 108);
-            this.StartScan.Name = "StartScan";
-            this.StartScan.Size = new System.Drawing.Size(75, 23);
-            this.StartScan.TabIndex = 0;
-            this.StartScan.Text = "StartScan";
-            this.StartScan.UseVisualStyleBackColor = true;
-            this.StartScan.Click += new System.EventHandler(this.StartScan_Click);
             // 
             // label1
             // 
@@ -78,46 +64,13 @@
             this.FileView.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.FileView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.FileView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.FilePath,
-            this.IdentifyCode,
-            this.Action});
+            this.OriginalFilename,
+            this.ChangedFilename});
             this.FileView.Location = new System.Drawing.Point(28, 151);
             this.FileView.Name = "FileView";
             this.FileView.RowTemplate.Height = 23;
             this.FileView.Size = new System.Drawing.Size(989, 568);
             this.FileView.TabIndex = 3;
-            // 
-            // FilePath
-            // 
-            this.FilePath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.FilePath.FillWeight = 70F;
-            this.FilePath.HeaderText = "FilePath";
-            this.FilePath.Name = "FilePath";
-            // 
-            // IdentifyCode
-            // 
-            this.IdentifyCode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.IdentifyCode.FillWeight = 20F;
-            this.IdentifyCode.HeaderText = "IdentifyCode";
-            this.IdentifyCode.Name = "IdentifyCode";
-            // 
-            // Action
-            // 
-            this.Action.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Action.FillWeight = 10F;
-            this.Action.HeaderText = "Action";
-            this.Action.Name = "Action";
-            // 
-            // StartMove
-            // 
-            this.StartMove.Enabled = false;
-            this.StartMove.Location = new System.Drawing.Point(516, 108);
-            this.StartMove.Name = "StartMove";
-            this.StartMove.Size = new System.Drawing.Size(75, 23);
-            this.StartMove.TabIndex = 4;
-            this.StartMove.Text = "StartMove";
-            this.StartMove.UseVisualStyleBackColor = true;
-            this.StartMove.Click += new System.EventHandler(this.StartRename_Click);
             // 
             // SelectDownloadFolderButton
             // 
@@ -156,19 +109,9 @@
             this.label2.TabIndex = 6;
             this.label2.Text = "Dest Folder";
             // 
-            // RenameMovies
-            // 
-            this.RenameMovies.Location = new System.Drawing.Point(671, 108);
-            this.RenameMovies.Name = "RenameMovies";
-            this.RenameMovies.Size = new System.Drawing.Size(98, 23);
-            this.RenameMovies.TabIndex = 9;
-            this.RenameMovies.Text = "RenameMovies";
-            this.RenameMovies.UseVisualStyleBackColor = true;
-            this.RenameMovies.Click += new System.EventHandler(this.button1_Click);
-            // 
             // SmartMove
             // 
-            this.SmartMove.Location = new System.Drawing.Point(220, 108);
+            this.SmartMove.Location = new System.Drawing.Point(361, 108);
             this.SmartMove.Name = "SmartMove";
             this.SmartMove.Size = new System.Drawing.Size(75, 23);
             this.SmartMove.TabIndex = 10;
@@ -176,36 +119,47 @@
             this.SmartMove.UseVisualStyleBackColor = true;
             this.SmartMove.Click += new System.EventHandler(this.SmartMove_Click);
             // 
-            // GetImages
+            // GetImageData
             // 
-            this.GetImages.Location = new System.Drawing.Point(816, 108);
-            this.GetImages.Name = "GetImages";
-            this.GetImages.Size = new System.Drawing.Size(98, 23);
-            this.GetImages.TabIndex = 11;
-            this.GetImages.Text = "GetImages";
-            this.GetImages.UseVisualStyleBackColor = true;
-            this.GetImages.Click += new System.EventHandler(this.GetImages_Click);
+            this.GetImageData.Location = new System.Drawing.Point(572, 108);
+            this.GetImageData.Name = "GetImageData";
+            this.GetImageData.Size = new System.Drawing.Size(174, 23);
+            this.GetImageData.TabIndex = 11;
+            this.GetImageData.Text = "GetImageData(not ready)";
+            this.GetImageData.UseVisualStyleBackColor = true;
+            this.GetImageData.Click += new System.EventHandler(this.GetImages_Click);
+            // 
+            // OriginalFilename
+            // 
+            this.OriginalFilename.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.OriginalFilename.FillWeight = 50F;
+            this.OriginalFilename.HeaderText = "Original Filename";
+            this.OriginalFilename.Name = "OriginalFilename";
+            // 
+            // ChangedFilename
+            // 
+            this.ChangedFilename.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ChangedFilename.FillWeight = 50F;
+            this.ChangedFilename.HeaderText = "ChangedFilename";
+            this.ChangedFilename.Name = "ChangedFilename";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1029, 767);
-            this.Controls.Add(this.GetImages);
+            this.Controls.Add(this.GetImageData);
             this.Controls.Add(this.SmartMove);
-            this.Controls.Add(this.RenameMovies);
             this.Controls.Add(this.SelectWorkingFolderButton);
             this.Controls.Add(this.WorkingFolderPath);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.SelectDownloadFolderButton);
-            this.Controls.Add(this.StartMove);
             this.Controls.Add(this.FileView);
             this.Controls.Add(this.DownloadFolderPath);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.StartScan);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "avmanager";
+            this.Text = "AvRenamer";
             ((System.ComponentModel.ISupportInitialize)(this.FileView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -213,22 +167,17 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button StartScan;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox DownloadFolderPath;
         private System.Windows.Forms.DataGridView FileView;
-        private System.Windows.Forms.Button StartMove;
         private System.Windows.Forms.Button SelectDownloadFolderButton;
         private System.Windows.Forms.Button SelectWorkingFolderButton;
         private System.Windows.Forms.TextBox WorkingFolderPath;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FilePath;
-        private System.Windows.Forms.DataGridViewTextBoxColumn IdentifyCode;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Action;
-        private System.Windows.Forms.Button RenameMovies;
         private System.Windows.Forms.Button SmartMove;
-        private System.Windows.Forms.Button GetImages;
+        private System.Windows.Forms.Button GetImageData;
+        private System.Windows.Forms.DataGridViewTextBoxColumn OriginalFilename;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ChangedFilename;
     }
 }
 

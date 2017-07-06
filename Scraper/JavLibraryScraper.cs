@@ -39,7 +39,7 @@ namespace avmanager.Scraper
             {
                 try
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(100);
                     doc = web.Load(url);
                     break;
                 }

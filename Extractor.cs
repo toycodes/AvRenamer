@@ -14,6 +14,7 @@ namespace avmanager
     {
         public string fileName;
         public string filePath;
+        public string destName;
         public string recommandCode;
         public string[] possibleCode;
     }
