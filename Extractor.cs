@@ -65,6 +65,19 @@ namespace avmanager
             return codes.ToArray<string>();
         }
 
+        public class CaseIgnoreComparer : IEqualityComparer<string>
+        {
+            public bool Equals(string x, string y)
+            {
+                return string.Equals(x,y,StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            public int GetHashCode(string obj)
+            {
+                return obj.GetHashCode();
+            }
+        }
+
         public static ExtractorResult extractOne(string path)
         {
             ExtractorResult result = new ExtractorResult();
@@ -75,7 +88,7 @@ namespace avmanager
             }
 
             string externs = Path.GetExtension(path);
-            if (!videoExtensions.Contains(Path.GetExtension(path)))
+            if (!videoExtensions.Contains(Path.GetExtension(path),new CaseIgnoreComparer()))
             {
                 return null;
             }
